@@ -1,0 +1,35 @@
+
+
+
+; default database config 默认数据库配置
+[database]
+driver = mysql
+host =
+username = root 
+port = 3306
+password = 
+database = 
+
+; table model config 数据模型设置
+[model]
+package = tables
+connection = default
+output = ./tables
+
+;腾讯云cos
+[cos]
+cos_app_id = 
+cos_secret_id = 
+cos_secret_key = 
+cos_bucket = 
+cos_region = ap-guangzhou
+cos_domain = 
+
+[redis]
+redis_host = 
+redis_password =
+redis_port = 6379
+
+[juhe]
+ju_app_key=
+ju_open_id=

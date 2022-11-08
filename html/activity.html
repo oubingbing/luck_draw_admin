@@ -1,0 +1,183 @@
+<link rel="stylesheet" href="../../../statics/css/element-ui-index.css">
+<link rel="stylesheet" href="../../../statics/css/app.css">
+<link rel="stylesheet" href="../../../statics/css/activity.css">
+
+<div id="app" v-cloak>
+    <el-row>
+        <el-button @click="createActivity = true" type="primary" icon="el-icon-plus">新建</el-button>
+    </el-row>
+    <el-dialog
+            :title="operateTitle"
+            :visible.sync="createActivity"
+            width="70%"
+            :before-close="cancelCreate">
+        <el-row>
+            <el-form ref="form" :rules="rules" ref="ruleForm" :model="activity" label-width="20%">
+                <el-col :span="12" >
+                    <el-form-item label="活动名称" prop="name">
+                        <el-input v-model="activity.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="活动类型" prop="type">
+                        <el-radio-group v-model="activity.type">
+                            <el-radio :label="1">红包</el-radio>
+                            <el-radio :label="2">商品</el-radio>
+                            <el-radio :label="3">话费</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="奖品" prop="gift_id">
+                        <el-select v-model="activity.gift_id" placeholder="请选择礼品">
+                            <el-option v-for="item in gifts"
+                                       :key="item.ID"
+                                       :label="item.Name"
+                                       :value="item.ID">
+
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="是否限制人数" prop="limit_join">
+                        <el-radio-group v-model="activity.limit_join">
+                            <el-radio :label="0">是</el-radio>
+                            <el-radio :label="1">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="是否开启广告" prop="open_ad">
+                        <el-radio-group v-model="activity.open_ad">
+                            <el-radio :label="1">是</el-radio>
+                            <el-radio :label="0">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="抽奖方式" prop="draw_type">
+                        <el-radio-group v-model="activity.draw_type">
+                            <el-radio :label="1">平均</el-radio>
+                            <el-radio :label="2">拼手气</el-radio>
+                            <el-radio :label="3">20%中奖</el-radio>
+                            <el-radio :label="4">定时</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="是否真送" prop="really">
+                        <el-radio-group v-model="activity.really">
+                            <el-radio :label="1">是</el-radio>
+                            <el-radio :label="0">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="是否置顶" prop="is_top">
+                        <el-radio-group v-model="activity.is_top">
+                            <el-radio :label="1">是</el-radio>
+                            <el-radio :label="0">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="布局" prop="big_pic">
+                        <el-radio-group v-model="activity.big_pic">
+                            <el-radio :label="1">大图</el-radio>
+                            <el-radio :label="2">小图</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submit">立即创建</el-button>
+                        <el-button @click="createActivity = false">取消</el-button>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="限制参与人数" prop="join_limit_num">
+                        <el-input v-model="activity.join_limit_num"></el-input>
+                    </el-form-item>
+                    <el-form-item label="假中奖人数" prop="receive_limit">
+                        <el-input v-model="activity.receive_limit"></el-input>
+                    </el-form-item>
+                    <el-form-item label="活动描述">
+                        <el-input
+                                type="textarea"
+                                :rows="4"
+                                placeholder=""
+                                v-model="activity.des">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="活动图片" prop="attachments">
+                        <el-upload
+                                class=""
+                                :action="cos.domain"
+                                :on-preview="uploadPreview"
+                                :on-remove="uploadRemove"
+                                :http-request="upload"
+                                :file-list="activity.attachments"
+                                limit="1"
+                                :data="2"
+                                list-type="picture">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="分享的标题" prop="share_title">
+                        <el-input v-model="activity.share_title"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分享的图片" prop="share_image">
+                        <el-upload
+                                class=""
+                                :action="cos.domain"
+                                :on-preview="uploadPreview"
+                                :on-remove="uploadRemove"
+                                :http-request="upload"
+                                :data="1"
+                                :file-list="activity.attachments"
+                                limit="1"
+                                list-type="picture">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
+                        </el-upload>
+                    </el-form-item>
+                </el-col>
+            </el-form>
+        </el-row>
+    </el-dialog>
+    <br>
+    <el-table :data="activityList" :height="height">
+        <el-table-column prop="Name"          label="活动名称"        width="200" fixed></el-table-column>
+        <el-table-column prop="TypeStr"       label="活动类型"        width="100"></el-table-column>
+        <el-table-column prop="Attachments[0]" label="活动图片"       width="150">
+            <template slot-scope="scope">
+                <img :src="scope.row.AttachmentsStr[0]" width="40" height="40" class="head_pic"/>
+            </template>
+        </el-table-column>
+        <el-table-column prop="GiftName"      label="礼品"            width="150"></el-table-column>
+        <el-table-column prop="JoinLimitNum"  label="限制参加人数"     width="100"></el-table-column>
+        <el-table-column prop="JoinNum"       label="参与人数"         width="100"></el-table-column>
+        <el-table-column prop="StatusStr"     label="状态"          width="100"></el-table-column>
+        <el-table-column prop="ReceiveLimit"  label="假中奖人数"          width="100"></el-table-column>
+        <el-table-column prop="OpenAdStr"     label="是否开启广告"    width="150"></el-table-column>
+        <el-table-column prop="DrawTypeStr"   label="抽奖类型"        width="100"></el-table-column>
+        <el-table-column prop="ReallyStr"     label="是否真送"        width="150"></el-table-column>
+        <el-table-column prop="BigPicStr"     label="布局"            width="150"></el-table-column>
+        <el-table-column prop="Des"           label="活动描述"        width="150"></el-table-column>
+        <el-table-column prop="ShareTitle"     label="活动分享标题"   width="150"></el-table-column>
+        <el-table-column prop="ShareImage[0]"  label="分享图片"       width="150">
+            <template slot-scope="scope">
+                <img :src="scope.row.ShareImageStr[0]" width="40" height="40" class="head_pic"/>
+            </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" fixed  width="150">
+            <template slot-scope="scope">
+                <el-button @click.native.prevent="edit(scope.row)" type="text" size="small">
+                    编辑
+                </el-button>
+                <el-button v-if="scope.row.Status == 1 || scope.row.Status == 3" @click.native.prevent="upActivity(scope.row.ID,2)" type="text" size="small">
+                    上架
+                </el-button>
+                <el-button v-if="scope.row.Status == 2" @click.native.prevent="downActivity(scope.row.ID,3)" type="text" size="small">
+                    下架
+                </el-button>
+                <el-button @click.native.prevent="deleteRow(scope.$index, activityList)" type="text" size="small">
+                    删除
+                </el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+</div>
+
+
+<script src="../../../statics/js/vue.min.js"></script>
+<script src="../../../statics/js/element-ui-index.js"></script>
+<script src="../../../statics/js/axios.min.js"></script>
+<script src="../../../statics/js/cos-js-sdk-v5.min.js"></script>
+<script src="../../../statics/js/util.js"></script>
+<script src="../../../statics/js/activity.js?date=2021-02-07-2"></script>
