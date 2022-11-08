@@ -54,7 +54,7 @@
                             <el-radio :label="4">定时</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="是否真送" prop="really">
+                    <el-form-item label="是否全送" prop="really">
                         <el-radio-group v-model="activity.really">
                             <el-radio :label="1">是</el-radio>
                             <el-radio :label="0">否</el-radio>
@@ -81,7 +81,7 @@
                     <el-form-item label="限制参与人数" prop="join_limit_num">
                         <el-input v-model="activity.join_limit_num"></el-input>
                     </el-form-item>
-                    <el-form-item label="假中奖人数" prop="receive_limit">
+                    <el-form-item label="不中奖人数" prop="receive_limit">
                         <el-input v-model="activity.receive_limit"></el-input>
                     </el-form-item>
                     <el-form-item label="活动描述">
@@ -145,7 +145,7 @@
         <el-table-column prop="ReceiveLimit"  label="假中奖人数"          width="100"></el-table-column>
         <el-table-column prop="OpenAdStr"     label="是否开启广告"    width="150"></el-table-column>
         <el-table-column prop="DrawTypeStr"   label="抽奖类型"        width="100"></el-table-column>
-        <el-table-column prop="ReallyStr"     label="是否真送"        width="150"></el-table-column>
+        <el-table-column prop="ReallyStr"     label="是否全送"        width="150"></el-table-column>
         <el-table-column prop="BigPicStr"     label="布局"            width="150"></el-table-column>
         <el-table-column prop="Des"           label="活动描述"        width="150"></el-table-column>
         <el-table-column prop="ShareTitle"     label="活动分享标题"   width="150"></el-table-column>

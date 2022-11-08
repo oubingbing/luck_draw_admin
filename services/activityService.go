@@ -203,9 +203,9 @@ func ActivityFormat(domain string,activity *model.ActivityPageFormat)  {
 	}
 
 	if int(activity.Really) == model.ACTIVITY_REALLY_N {
-		activity.ReallyStr = "假送"
+		activity.ReallyStr = "不全送"
 	}else{
-		activity.ReallyStr = "真送"
+		activity.ReallyStr = "全送"
 	}
 
 	if int(activity.BigPic) == model.ACTIVITY_BIG_PIC_BIG {
